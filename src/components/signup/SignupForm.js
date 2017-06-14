@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-
+import classnames from 'classnames'
+import validateInput from '../../validations/validateInput'
+import TextFieldGroup from '../common/TextFieldGroup'
 
 class SignupForm extends React.Component {
 
@@ -11,93 +13,82 @@ class SignupForm extends React.Component {
 			email: '',
 			school: '',
 			education: '',
-			year: ''
+			year: '',
+			errors: {},
+			isLoading: false
 		}
 		this.onChange = this.onChange.bind(this)
 		this.onSubmit = this.onSubmit.bind(this)
 	}
 
-	// isValid(){
-	// 	const { error, isValid }validateInput(this.state);
+	isValid(){
+		const { errors, isValid } = validateInput(this.state);
 
-	// 	if(!isValid){
-	// 		this.setState({ errors });
-	// 	}
+		if(!isValid){
+			this.setState({ errors });
+		}
 		
-	// 	return isValid;
-	// }
+		return isValid;
+	}
 
 	onSubmit(event){
 		event.preventDefault()
-		console.log(this.state)
 
-		if(this.isValid){
-			// Post student to firebase here
+		// Post student to firebase here
+		if(this.isValid()){
+			this.setState({ errors: {}}) //isLoading: true
 			this.props.studentSignupRequest(this.state)
-			Console.log("Submitting student")
 		}
-	}
+
+	};
 
 	onChange(event){
 		this.setState({ [event.target.name]: event.target.value })
 	}
 
 	render(){
+		const { errors } = this.state
+
 		return (
 			<form onSubmit={this.onSubmit}>
-		    	<div className="form-group">
-					<input 
+		    	<TextFieldGroup
 						onChange = {this.onChange}
 						value = {this.state.name}
 						name="name" 
-						className="form-control" 
-						id="exampleInputEmail1" 
-						aria-describedby="nameHelp" 
-						placeholder="Your Name" />
-				</div>
-				<div className="form-group">
-					<input 
+						classname="form-group" 
+						placeholder="Your Name"
+						error= {errors.name} />
+				<TextFieldGroup
 						onChange = {this.onChange}
 						value = {this.state.email}
 						name="email" 
-						className="form-control" 
-						id="exampleInputEmail1" 
-						aria-describedby="emailHelp" 
-						placeholder="Email" />
-				</div>
-				<div className="form-group">
-					<input 
+						classname="form-group" 
+						placeholder="Email"
+						error= {errors.email} />
+				<TextFieldGroup
 						onChange = {this.onChange}
 						value = {this.state.school}
 						name="school" 
-						className="form-control" 
-						id="exampleInputSchool1" 
-						aria-describedby="schoolHelp" 
-						placeholder="School" />
-				</div>
+						classname="form-group" 
+						placeholder="School"
+						error= {errors.school} />
 				<div className="row">
-					<div className="form-group col-xs-6">
-						<input 
+					<TextFieldGroup
 						onChange = {this.onChange}
 						value = {this.state.education}
 						name="education" 
-						className="form-control" 
-						id="exampleInputEducation1" 
-						aria-describedby="educationHelp" 
-						placeholder="Education" />
-					</div>
-					<div className="form-group col-xs-6">
-						<input 
+						classname="form-group col-xs-6" 
+						placeholder="Education"
+						error= {errors.education} />
+					<TextFieldGroup
 						onChange = {this.onChange}
 						value = {this.state.year}
 						name="year" 
-						className="form-control" 
-						id="exampleInputYear1" 
-						aria-describedby="yearHelp" 
-						placeholder="Year" />
-					</div>
+						classname="form-group col-xs-6" 
+						placeholder="Year"
+						error= {errors.year} />
 				</div>
-				<button type="submit" className="btn btn-primary">
+				<button disabled={this.state.isLoading} type="submit" className="btn btn-primary">
 					Submit
 				</button>
 		    </form>
