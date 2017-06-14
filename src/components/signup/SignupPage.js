@@ -19,8 +19,12 @@ class SignupPage extends React.Component {
 }
 
 
+const mapDispatchToProps = {
+	studentSignupRequest
+}
+
 SignupPage.propTypes = {
 	studentSignupRequest: PropTypes.func.isRequired
 }
 
-export default connect(null, { studentSignupRequest })(SignupPage);
+export default connect(null, mapDispatchToProps)(SignupPage);
